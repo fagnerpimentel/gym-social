@@ -3,6 +3,7 @@
 
   <arg name="robot_name"             default="robot"/>
 
+  <arg name="enable_render"          default="true"/>
   <arg name="path_storage"           default=""/>
   <arg name="max_experiments"        default="10"/>
 
@@ -66,6 +67,7 @@
   <!-- gym_social -->
   <node name="gym_social" pkg="gym_social" type="test.py"
     output="screen" required="true">
+    <param name="enable_render"             value="$(arg enable_render)"/>
     <param name="path_storage"              value="$(arg path_storage)"/>
     <param name="max_experiments"           value="$(arg max_experiments)"/>
     <param name="global_planner"            value="$(arg global_planner)"/>

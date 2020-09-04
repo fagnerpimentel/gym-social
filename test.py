@@ -8,6 +8,7 @@ from save_data import *
 
 rospy.init_node('socialnav_gym')
 
+enable_render = rospy.get_param('~enable_render', '')
 path_storage = rospy.get_param('~path_storage', '')
 max_episode = rospy.get_param('~max_experiments', 10)
 global_planner = rospy.get_param('~global_planner', '')
@@ -30,7 +31,8 @@ for i_episode in range(max_episode):
     observation = env.reset()
     rospy.loginfo("Running episode {}/{}".format(i_episode+1,max_episode))
     while True:
-        env.render()
+        if(enable_render):
+            env.render()
         action = env.action_space.sample()
         observation, reward, done, info = env.step(action)
         if done:
