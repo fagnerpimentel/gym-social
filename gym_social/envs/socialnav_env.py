@@ -17,7 +17,7 @@ from std_msgs.msg import Float32
 from nav_msgs.msg import Path
 from nav_msgs.srv import GetPlan
 from nav_msgs.msg import OccupancyGrid
-from people_msgs.msg import People
+from social_msgs.msg import People
 from gazebo_msgs.srv import SetModelState
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.msg import ModelStates

@@ -62,7 +62,7 @@ def generate_csv(params, data):
         for e2 in e1.people_array:
             list_3 = []
             for e3 in e2:
-                list_3.append('['+str(e3.position.x)+','+str(e3.position.y)+']')
+                list_3.append('['+str(e3.pose.position.x)+','+str(e3.pose.position.y)+']')
             list_2.append('[' + ','.join([str(x) for x in list_3]) + ']')
         list_1.append('"'+str(i)+'":[' + ','.join([str(x) for x in list_2]) + ']')
         i += 1

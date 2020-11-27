@@ -33,19 +33,18 @@
     <arg name="enable_gui" default="false" />
     <arg name="paused"     default="false" />
   </include>
-  <!-- check robot collisions -->
-  <node name="hera_check_collision" pkg="hera_description" type="hera_check_collision" output="screen">
-    <param name="world_name" value="default"/>
-    <param name="robot_name" value="$(arg robot_name)"/>
-  </node>
-  <!-- check_region -->
-  <node name="check_forbidden_region" pkg="social_worlds" type="check_region_node" output="screen">
-    <param name="region_name" value="forbidden_region"/>
-    <param name="model_name" value="$(arg robot_name)"/>
-  </node>
 
   <!-- robot -->
   <include file="$(find hera_description)/launch/load_description.launch" />
+
+  <!-- robot control (set head and kinect_plat to predefined angles (0.0 and 0.96))-->
+  <node name="head_publisher" pkg="rostopic" type="rostopic" output="screen"
+    args="pub /head_control std_msgs/Float64 'data: 0.0'" />
+  <node name="kinect_plat_publisher" pkg="rostopic" type="rostopic" output="screen"
+    args="pub /kinect_plat_control std_msgs/Float64 'data: 0.96'" />
+
+  <!-- social_reasoning -->
+  <include file="$(find social_reasoning)/launch/social_reasoning.launch" />
 
   <!-- navigation -->
   <include file="$(find hera_bringup)/launch/bring_up.launch" >
@@ -82,6 +81,18 @@
   <!-- real time factor publisher -->
   <node name="real_time_factor_publisher_node" pkg="social_worlds" type="real_time_factor_publisher_node" output="screen">
     <param name="world_name" value="default"/>
+  </node>
+
+  <!-- check robot collisions -->
+  <node name="check_collision_node" pkg="social_worlds" type="check_collision_node" output="screen">
+    <param name="world_name" value="$(arg world_name)"/>
+    <param name="robot_name" value="$(arg robot_name)"/>
+  </node>
+
+  <!-- check_region -->
+  <node name="check_forbidden_region" pkg="social_worlds" type="check_region_node" output="screen">
+    <param name="region_name" value="forbidden_region"/>
+    <param name="model_name" value="$(arg robot_name)"/>
   </node>
 
 </launch>
