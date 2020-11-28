@@ -237,11 +237,19 @@ class SocialNavEnv(gym.Env):
     mb_goal = MoveBaseGoal()
     mb_goal.target_pose.header = Header(0,rospy.Time(0),"map")
     mb_goal.target_pose = target_pose
-    self.move_base.send_goal(mb_goal, done_cb=self.__movebase_callback__)
+    self.move_base.send_goal(mb_goal,
+        active_cb=self.__movebase_callback_active__,
+        feedback_cb=self.__movebase_callback_feedback__,
+        done_cb=self.__movebase_callback_done__)
     # self.move_base.wait_for_result()
     self.rate.sleep()
-  def __movebase_callback__(self, state, result):
-    rospy.loginfo('Teste. entrou no callback ')
+
+  def __movebase_callback_active__(self, state, result):
+    rospy.loginfo("Action server is processing the goal")
+  def __movebase_callback_feedback__(self, feedback):
+    rospy.loginfo("Feedback:%s" % str(feedback))
+  def __movebase_callback_done__(self, state, result):
+    rospy.loginfo("Action server is done. State: %s, result: %s" % (str(state), str(result)))
 
     # if (state == actionlib::SimpleClientGoalState::SUCCEEDED){
     if (state == 3):
