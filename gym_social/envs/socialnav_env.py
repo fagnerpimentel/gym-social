@@ -241,6 +241,8 @@ class SocialNavEnv(gym.Env):
     # self.move_base.wait_for_result()
     self.rate.sleep()
   def __movebase_callback__(self, state, result):
+    rospy.loginfo('Teste. entrou no callback ')
+
     # if (state == actionlib::SimpleClientGoalState::SUCCEEDED){
     if (state == 3):
         rospy.loginfo('Reached checkpoint ' + str(self.checkpoint_actual_index))
