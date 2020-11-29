@@ -238,9 +238,9 @@ class SocialNavEnv(gym.Env):
     mb_goal.target_pose.header = Header(0,rospy.Time(0),"map")
     mb_goal.target_pose = target_pose
     self.move_base.send_goal(mb_goal,
+        done_cb=self.__movebase_callback_done__,
         active_cb=self.__movebase_callback_active__,
-        feedback_cb=self.__movebase_callback_feedback__,
-        done_cb=self.__movebase_callback_done__)
+        feedback_cb=self.__movebase_callback_feedback__)
     # self.move_base.wait_for_result()
     self.rate.sleep()
 
