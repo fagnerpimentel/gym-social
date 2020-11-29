@@ -246,8 +246,10 @@ class SocialNavEnv(gym.Env):
 
   def __movebase_callback_active__(self):
     rospy.loginfo("Action server is processing the goal")
+
   def __movebase_callback_feedback__(self, feedback):
     rospy.loginfo("Feedback:%s" % str(feedback))
+
   def __movebase_callback_done__(self, state, result):
     rospy.loginfo("Action server is done. State: %s, result: %s" % (str(state), str(result)))
 
