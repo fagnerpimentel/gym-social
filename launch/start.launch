@@ -39,9 +39,9 @@
 
   <!-- robot control (set head and kinect_plat to predefined angles (0.0 and 0.96))-->
   <node name="head_publisher" pkg="rostopic" type="rostopic" output="screen"
-    args="pub /head_control std_msgs/Float64 'data: 0.0'" />
+    args="pub /control/head std_msgs/Float64 'data: 0.0'" />
   <node name="kinect_plat_publisher" pkg="rostopic" type="rostopic" output="screen"
-    args="pub /kinect_plat_control std_msgs/Float64 'data: 0.96'" />
+    args="pub /control/kinect_plat std_msgs/Float64 'data: 0.96'" />
 
   <!-- social_reasoning -->
   <include file="$(find social_reasoning)/launch/social_reasoning.launch" />
