@@ -116,17 +116,17 @@ def generate_csv(params, data):
     i = 0
     for e1 in data:
         (start_yaw, _, _) = quaternion_to_euler(
-            e1.checkpoints[0].orientation.x, e1.checkpoints[0].orientation.y,
-            e1.checkpoints[0].orientation.z, e1.checkpoints[0].orientation.w)
+            e1.checkpoints[0].pose.orientation.x, e1.checkpoints[0].pose.orientation.y,
+            e1.checkpoints[0].pose.orientation.z, e1.checkpoints[0].pose.orientation.w)
         (goal_yaw, _, _) = quaternion_to_euler(
-            e1.checkpoints[-1].orientation.x, e1.checkpoints[-1].orientation.y,
-            e1.checkpoints[-1].orientation.z, e1.checkpoints[-1].orientation.w)
+            e1.checkpoints[-1].pose.orientation.x, e1.checkpoints[-1].pose.orientation.y,
+            e1.checkpoints[-1].pose.orientation.z, e1.checkpoints[-1].pose.orientation.w)
         file_result.write( str(i) + ",")
-        file_result.write( str(e1.checkpoints[0].position.x) + ",")
-        file_result.write( str(e1.checkpoints[0].position.y) + ",")
+        file_result.write( str(e1.checkpoints[0].pose.position.x) + ",")
+        file_result.write( str(e1.checkpoints[0].pose.position.y) + ",")
         file_result.write( str(start_yaw) + ",")
-        file_result.write( str(e1.checkpoints[-1].position.x) + ",")
-        file_result.write( str(e1.checkpoints[-1].position.y) + ",")
+        file_result.write( str(e1.checkpoints[-1].pose.position.x) + ",")
+        file_result.write( str(e1.checkpoints[-1].pose.position.y) + ",")
         file_result.write( str(goal_yaw) + ",")
         file_result.write( str(e1.space_min) + ",")
         file_result.write( str(e1.time_min) + ",")
