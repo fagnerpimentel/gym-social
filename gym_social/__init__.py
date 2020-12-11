@@ -12,7 +12,14 @@ register(
 
 register(
     id='GazeboSocialNav-v0',
-    entry_point='gym_social.envs:SocialNavEnv',
+    entry_point='gym_social.envs:SocialNavEnv0',
+    reward_threshold=1.0,
+    nondeterministic = True,
+)
+
+register(
+    id='GazeboSocialNav-v1',
+    entry_point='gym_social.envs:SocialNavEnv1',
     reward_threshold=1.0,
     nondeterministic = True,
 )
