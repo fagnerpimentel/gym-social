@@ -7,8 +7,9 @@
   <arg name="path_storage"           default=""/>
   <arg name="max_experiments"        default="10"/>
 
-  <arg name="world_name"             default="simple_room"/>
-  <arg name="map_name"               default="simple_room"/>
+  <arg name="world_path"             default=""/>
+  <arg name="world_name"             default=""/>
+  <arg name="map_config"             default=""/>
   <arg name="use_amcl"               default="true"/>
   <arg name="global_planner"         default="navfn/NavfnROS"/>
   <arg name="local_planner"          default="base_local_planner/TrajectoryPlannerROS"/>
@@ -29,14 +30,14 @@
 
   <!-- simulator -->
   <include file="$(find social_worlds)/launch/start_world.launch" >
-    <arg name="world_name" default="$(arg world_name)" />
+    <arg name="world_path" default="$(arg world_path)" />
     <arg name="enable_gui" default="false" />
     <arg name="paused"     default="false" />
   </include>
 
   <!-- robot -->
   <include file="$(find hera_bringup)/launch/bring_up.launch" >
-    <arg name="map_name"              default="$(arg map_name)"/>
+    <arg name="map_config"            default="$(arg map_config)"/>
     <arg name="use_amcl"              default="$(arg use_amcl)"/>
     <arg name="global_planner"        default="$(arg global_planner)"/>
     <arg name="local_planner"         default="$(arg local_planner)"/>
