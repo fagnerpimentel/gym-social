@@ -58,12 +58,6 @@
   <node name="kinect_plat_publisher" pkg="rostopic" type="rostopic" output="screen"
     args="pub /control/kinect_plat std_msgs/Float64 'data: 0.96'" />
 
-  <!-- social_reasoning -->
-  <include file="$(find social_reasoning)/launch/social_reasoning.launch" />
-
-  <!-- social_navigation -->
-  <node name="social_navigation" pkg="social_move_base" type="social_move_base_node" output="screen" />
-
   <!-- gym_social -->
   <node name="gym_social" pkg="gym_social" type="test1.py"
     output="screen" required="true">
