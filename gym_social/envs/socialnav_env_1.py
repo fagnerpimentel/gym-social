@@ -3,10 +3,10 @@ import cv2
 import gym
 import enum
 import math
+# import time
 import numpy
 import rospy
 import random
-# import rosnode
 import roslaunch
 import actionlib
 
@@ -18,7 +18,8 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import GetPlan
 from nav_msgs.msg import OccupancyGrid
 from social_msgs.msg import People
-from social_msgs.msg import Locals
+from social_msgs.msg import Locals, Local
+from social_msgs.srv import DestinationArray
 from gazebo_msgs.srv import SetModelState
 from gazebo_msgs.msg import ModelState
 from gazebo_msgs.msg import ModelStates
@@ -109,10 +110,12 @@ class SocialNavEnv(gym.Env):
   def __init__(self):
     super(SocialNavEnv, self).__init__()
 
-  def init_ros(self, global_planner, local_planner,
+  def init_ros(self, robot_path,
+               global_planner, local_planner,
                robot_model_name, robot_max_vel,
                space_factor_tolerance, time_factor_tolerance):
 
+    self.robot_path = robot_path
     self.global_planner = global_planner
     self.local_planner = local_planner
     self.robot_model_name = robot_model_name
@@ -124,7 +127,7 @@ class SocialNavEnv(gym.Env):
     self.rate = rospy.Rate(10)
     # tf_listener
     # self.tf_listener = tf.TransformListener()
-    
+
     # gym variables
     self.action_space = gym.spaces.Discrete(N_DISCRETE_ACTIONS)
     self.observation_space = gym.spaces.Box(low=0, high=255, shape=
@@ -155,6 +158,7 @@ class SocialNavEnv(gym.Env):
     rospy.loginfo("Subscribers ready.")
 
     # services
+    self.srv_get_destination = init_service("/social_reasoning/get_destination", DestinationArray)
     self.srv_reset_world = init_service("/gazebo/reset_world", Empty)
     self.srv_model_reposition = init_service("/gazebo/set_model_state", SetModelState)
     self.srv_clear_costmaps = init_service("/move_base/clear_costmaps", Empty)
@@ -172,6 +176,7 @@ class SocialNavEnv(gym.Env):
         # if '/amcl' in nodes:
         #     self.__reset_amcl__(start)
         self.srv_clear_costmaps()
+        # time.sleep(1)
         ps_start = PoseStamped(Header(0,rospy.Time.now(),"map"), start)
         ps_goal = PoseStamped(Header(0,rospy.Time.now(),"map"), goal)
         path_plan.poses = self.srv_make_plan(ps_start, ps_goal, 0.1).plan.poses
@@ -310,9 +315,16 @@ class SocialNavEnv(gym.Env):
   def reset(self):
 
     # get new checkpoints
-    # checkpoints = self.__get_random_checkpoints__()
-    checkpoints = self.locals
     self.checkpoint_actual_index = 1
+    rp = self.robot_path.split()
+    checkpoints = []
+    for cp_name in rp:
+        destination = []
+        destination = self.srv_get_destination(cp_name).destination_list[0]
+        l = Local()
+        l.name = destination.name
+        l.pose = destination.pose
+        checkpoints.append(l)
 
     # Reset world
     self.srv_reset_world()
@@ -331,6 +343,7 @@ class SocialNavEnv(gym.Env):
     # clear costmaps
     self.srv_clear_costmaps()
     self.rate.sleep()
+    # time.sleep(1)
 
     # get new path plan
     path_plan = []

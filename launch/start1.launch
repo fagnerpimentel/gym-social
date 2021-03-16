@@ -6,11 +6,14 @@
   <arg name="enable_render"          default="true"/>
   <arg name="path_storage"           default=""/>
   <arg name="max_experiments"        default="10"/>
+  <arg name="robot_path"             default=""/>
 
   <arg name="world_path"             default=""/>
   <arg name="world_name"             default=""/>
   <arg name="map_config"             default=""/>
   <arg name="use_amcl"               default="true"/>
+
+  <arg name="database_input"        default="$(find social_reasoning)/ontology_input.db"/>
   <arg name="global_planner"         default="navfn/NavfnROS"/>
   <arg name="local_planner"          default="base_local_planner/TrajectoryPlannerROS"/>
   <arg name="global_layers"          default="[ {name: static_layer, type: 'costmap_2d::StaticLayer'}, {name: obstacles_layer, type: 'costmap_2d::VoxelLayer'}, {name: inflation_layer, type: 'costmap_2d::InflationLayer'}]" />
@@ -39,6 +42,7 @@
   <include file="$(find hera_bringup)/launch/bring_up.launch" >
     <arg name="map_config"            default="$(arg map_config)"/>
     <arg name="use_amcl"              default="$(arg use_amcl)"/>
+    <arg name="database_input"        default="$(arg database_input)"/>
     <arg name="global_planner"        default="$(arg global_planner)"/>
     <arg name="local_planner"         default="$(arg local_planner)"/>
     <arg name="global_layers"         default="$(arg global_layers)"/>
@@ -46,8 +50,8 @@
     <arg name="observation_sources"   default="$(arg observation_sources)"/>
     <arg name="xy_goal_tolerance"     default="$(arg xy_goal_tolerance)"/>
     <arg name="yaw_goal_tolerance"    default="$(arg yaw_goal_tolerance)"/>
-    <arg name="enable_description"    default="true"/>
     <arg name="enable_map"            default="true"/>
+    <arg name="enable_talk"           default="false"/>
     <arg name="enable_localization"   default="true"/>
     <arg name="enable_navigation"     default="true"/>
   </include>
@@ -64,6 +68,7 @@
     <param name="enable_render"             value="$(arg enable_render)"/>
     <param name="path_storage"              value="$(arg path_storage)"/>
     <param name="max_experiments"           value="$(arg max_experiments)"/>
+    <param name="robot_path"                value="$(arg robot_path)"/>
     <param name="global_planner"            value="$(arg global_planner)"/>
     <param name="local_planner"             value="$(arg local_planner)"/>
     <param name="world_model_name"          value="$(arg world_name)"/>
