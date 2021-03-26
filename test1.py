@@ -12,7 +12,7 @@ rospy.init_node('socialnav_gym')
 enable_render = rospy.get_param('~enable_render', '')
 path_storage = rospy.get_param('~path_storage', '')
 max_episode = rospy.get_param('~max_experiments', 10)
-robot_path = rospy.get_param('~robot_path', '')
+robot_waypoints = rospy.get_param('~robot_waypoints', '')
 global_planner = rospy.get_param('~global_planner', '')
 local_planner = rospy.get_param('~local_planner', '')
 robot_model_name = rospy.get_param('~robot_model_name', '')
@@ -22,7 +22,7 @@ space_factor_tolerance = rospy.get_param('~space_factor_tolerance', 5)
 time_factor_tolerance = rospy.get_param('~time_factor_tolerance', 5)
 
 env = gym.make("GazeboSocialNav-v1")
-env.init_ros(robot_path,
+env.init_ros(robot_waypoints,
     global_planner, local_planner,
     robot_model_name, robot_max_vel,
     space_factor_tolerance, time_factor_tolerance)

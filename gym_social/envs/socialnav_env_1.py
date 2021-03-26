@@ -110,12 +110,12 @@ class SocialNavEnv(gym.Env):
   def __init__(self):
     super(SocialNavEnv, self).__init__()
 
-  def init_ros(self, robot_path,
+  def init_ros(self, robot_waypoints,
                global_planner, local_planner,
                robot_model_name, robot_max_vel,
                space_factor_tolerance, time_factor_tolerance):
 
-    self.robot_path = robot_path
+    self.robot_waypoints = robot_waypoints
     self.global_planner = global_planner
     self.local_planner = local_planner
     self.robot_model_name = robot_model_name
@@ -159,7 +159,10 @@ class SocialNavEnv(gym.Env):
 
     # services
     self.srv_get_destination = init_service("/social_reasoning/get_destination", DestinationArray)
+    self.srv_reset_people_db = init_service("/social_reasoning/clear_people", Empty)
+    self.srv_reset_people_model = init_service("/spawn_pedsim_agents/reset", Empty)
     self.srv_reset_world = init_service("/gazebo/reset_world", Empty)
+    self.srv_reset_people_pedsim = init_service("/pedsim_simulator/reset_simulation", Empty)
     self.srv_model_reposition = init_service("/gazebo/set_model_state", SetModelState)
     self.srv_clear_costmaps = init_service("/move_base/clear_costmaps", Empty)
     self.srv_make_plan = init_service("/move_base/{}/make_plan".format(self.global_planner.split("/", 1)[1]),GetPlan)
@@ -314,20 +317,27 @@ class SocialNavEnv(gym.Env):
 
   def reset(self):
 
+    # Reset world
+    self.srv_reset_world()
+    self.srv_reset_people_db()
+    # self.srv_reset_people_pedsim()
+    # self.srv_reset_people_model()
+
+    self.rate.sleep()
+
     # get new checkpoints
     self.checkpoint_actual_index = 1
-    rp = self.robot_path.split()
+    rp = self.robot_waypoints.split()
     checkpoints = []
     for cp_name in rp:
+        if(cp_name == "person"):
+            cp_name = random.choice(self.people).name
         destination = []
         destination = self.srv_get_destination(cp_name).destination_list[0]
         l = Local()
         l.name = destination.name
         l.pose = destination.pose
         checkpoints.append(l)
-
-    # Reset world
-    self.srv_reset_world()
 
     # reset robot
     model = ModelState()

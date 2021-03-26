@@ -2,23 +2,23 @@
 <launch>
 
   <arg name="robot_name"             default="robot"/>
-
-  <arg name="enable_render"          default="true"/>
-  <arg name="path_storage"           default=""/>
   <arg name="max_experiments"        default="10"/>
-  <arg name="robot_path"             default=""/>
+  <arg name="path_storage"           default=""/>
 
-  <arg name="world_path"             default=""/>
-  <arg name="world_name"             default=""/>
-  <arg name="map_config"             default=""/>
   <arg name="use_amcl"               default="true"/>
-
-  <arg name="database_input"        default="$(find social_reasoning)/ontology_input.db"/>
   <arg name="global_planner"         default="navfn/NavfnROS"/>
   <arg name="local_planner"          default="base_local_planner/TrajectoryPlannerROS"/>
   <arg name="global_layers"          default="[ {name: static_layer, type: 'costmap_2d::StaticLayer'}, {name: obstacles_layer, type: 'costmap_2d::VoxelLayer'}, {name: inflation_layer, type: 'costmap_2d::InflationLayer'}]" />
   <arg name="local_layers"           default="[ {name: obstacles_layer, type: 'costmap_2d::VoxelLayer'}, {name: inflation_layer, type: 'costmap_2d::InflationLayer'}]"/>
   <arg name="observation_sources"    default="laser_scan_front_observation"/>
+
+  <arg name="map_config"             default=""/>
+  <arg name="world_name"             default=""/>
+  <arg name="world_path"             default=""/>
+  <arg name="scenario_path"          default=""/>
+
+  <arg name="database_input"         default="$(find social_reasoning)/ontology_input.db"/>
+  <arg name="robot_waypoints"        default=""/>
 
   <arg name="xy_goal_tolerance"      default="0.1"/>
   <arg name="yaw_goal_tolerance"     default="3.1415"/>
@@ -65,10 +65,10 @@
   <!-- gym_social -->
   <node name="gym_social" pkg="gym_social" type="test1.py"
     output="screen" required="true">
-    <param name="enable_render"             value="$(arg enable_render)"/>
+    <param name="enable_render"             value="false"/>
     <param name="path_storage"              value="$(arg path_storage)"/>
     <param name="max_experiments"           value="$(arg max_experiments)"/>
-    <param name="robot_path"                value="$(arg robot_path)"/>
+    <param name="robot_waypoints"           value="$(arg robot_waypoints)"/>
     <param name="global_planner"            value="$(arg global_planner)"/>
     <param name="local_planner"             value="$(arg local_planner)"/>
     <param name="world_model_name"          value="$(arg world_name)"/>
@@ -94,5 +94,30 @@
     <param name="region_name" value="forbidden_region"/>
     <param name="model_name" value="$(arg robot_name)"/>
   </node>
+
+  <!-- Simulator pedsim-->
+  <node name="pedsim_simulator" pkg="pedsim_simulator" type="pedsim_simulator" output="log">
+    <param name="scene_file" value="$(arg scenario_path)" type="string"/>
+    <param name="enable_groups" value="true" type="bool"/>
+    <param name="robot_mode" value="1" type="int"/>
+
+  </node>
+
+  <!-- Visualizer -->
+  <include file="$(find pedsim_visualizer)/launch/visualizer.launch"/>
+
+  <!-- this node spawn pedsim actors to gazebo once, then the plugin updates their pose -->
+  <node pkg="pedsim_gazebo_plugin" type="spawn_pedsim_agents.py" name="spawn_pedsim_agents"  output="screen">
+    <param name="actor_model_file" value="$(find social_worlds)/models/human_cylinder_visual/model.sdf"/>
+  </node>
+
+  <!-- sincronize simulation factos of gazebo with pedsim -->
+  <node pkg="pedsim_gazebo_plugin" type="update_pedsim_factor.py" name="update_pedsim_factor" output="screen">
+    <param name="node_to_reconfigure" value="pedsim_simulator"/>
+    <param name="topic_with_new_factor" value="real_time_factor"/>
+  </node>
+
+  <node name="pedsim_to_social" pkg="phd" type="pedsim_to_social.py" output="screen" />
+
 
 </launch>
