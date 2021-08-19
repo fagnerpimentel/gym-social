@@ -166,6 +166,7 @@ class SocialNavEnv(gym.Env):
     self.srv_model_reposition = init_service("/gazebo/set_model_state", SetModelState)
     self.srv_clear_costmaps = init_service("/move_base/clear_costmaps", Empty)
     self.srv_make_plan = init_service("/move_base/{}/make_plan".format(self.global_planner.split("/", 1)[1]),GetPlan)
+    # self.srv_cancel_navigation = init_service("/social_navigation/cancel", Empty)
     rospy.loginfo("Services ready.")
 
     # actions
@@ -379,6 +380,9 @@ class SocialNavEnv(gym.Env):
     time_max = time_min*self.time_factor_tolerance
     rospy.loginfo('Space max: {} meters'.format(round(space_max,2)))
     rospy.loginfo('Time max: {} seconds'.format(round(time_max,2)))
+
+    # calcel previous navigation
+    # self.srv_cancel_navigation()
 
     # Send navigation command to robot
     self.__social_movebase_command__(checkpoints[self.checkpoint_actual_index].name)
